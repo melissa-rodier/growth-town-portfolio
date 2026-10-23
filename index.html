@@ -36,7 +36,22 @@ a{color:var(--accent)}
 .top{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px;margin-bottom:16px}
 .top h1{margin:0;font-family:var(--round);font-weight:700;font-size:clamp(1.6rem,3vw,2.2rem);letter-spacing:-0.01em}
 .top h1 span{font-weight:500;color:var(--muted);font-size:.6em;margin-left:8px}
-.top a.mail{font-family:var(--round);font-weight:600;text-decoration:none;background:var(--sun);color:var(--on-sun);padding:10px 18px;border-radius:999px;min-height:44px;display:inline-flex;align-items:center}
+.contact-top{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.contact-top .addr{font-family:var(--round);font-weight:500;color:var(--muted);margin-right:4px}
+.contact{margin-top:6px;padding:16px;border-radius:18px;background:var(--chip);display:flex;flex-direction:column;gap:10px}
+.contact b{font-family:var(--round);font-size:1.1rem}
+.contact p{margin:0;color:var(--muted)}
+.contact .addr{font-size:15px;word-break:break-all}
+.lvl{display:flex;align-items:center;gap:10px;font-family:var(--round);font-weight:600;color:var(--muted)}
+.pips{display:flex;gap:5px}
+.pip{width:14px;height:14px;border-radius:4px;background:var(--line);transform:rotate(45deg)}
+.pip.on{background:var(--sun)}
+.upbox{display:flex;flex-direction:column;gap:6px;padding:14px;border-radius:16px;border:2px dashed var(--sun)}
+.btn.up{align-self:flex-start;background:var(--accent);border-color:var(--accent);color:#FFFFFF}
+.maxed{font-family:var(--round);font-weight:600;color:var(--accent)}
+details{border-top:1px solid var(--line);padding-top:8px}
+summary{cursor:pointer;font-family:var(--round);font-weight:600;min-height:32px}
+details p{margin:6px 0 0;color:var(--muted)}
 .layout{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:20px;align-items:start}
 .stage{position:relative;background:var(--panel);border-radius:24px;overflow:hidden;box-shadow:0 0 0 1px var(--line)}
 canvas{display:block;width:100%;aspect-ratio:16/10;cursor:pointer;touch-action:manipulation}
@@ -70,6 +85,20 @@ canvas{display:block;width:100%;aspect-ratio:16/10;cursor:pointer;touch-action:m
 .detail .statl{color:var(--muted);margin-top:4px}
 .detail .tag{display:inline-block;align-self:flex-start;font-family:var(--round);font-weight:600;font-size:14px;padding:3px 12px;border-radius:999px;color:#1F2340}
 .detail p{margin:0}
+.quick{position:fixed;inset:0;z-index:30;background:var(--bg);overflow:auto;padding:calc(env(safe-area-inset-top,0px) + 12px) 20px calc(env(safe-area-inset-bottom,0px) + 40px)}
+.quick[hidden]{display:none}
+.quick .in{max-width:780px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+.quick .qbar{position:sticky;top:0;z-index:1;background:var(--bg);display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px;padding:10px 0}
+.quick h2{font-family:var(--round);font-size:clamp(1.5rem,3vw,2rem);margin:0}
+.quick h3{font-family:var(--round);font-size:1.25rem;margin:0}
+.quick .lede{margin:0;font-size:1.1rem;color:var(--muted)}
+.quick section{background:var(--panel);border-radius:20px;padding:18px 20px;box-shadow:0 0 0 1px var(--line);display:flex;flex-direction:column;gap:12px}
+.quick .ch{border-top:1px solid var(--line);padding-top:12px;display:flex;flex-direction:column;gap:4px}
+.quick .ch b{font-family:var(--round);font-weight:600}
+.quick .num{font-family:var(--round);font-weight:700;font-size:1.25rem}
+.quick .num span{font-family:var(--body);font-weight:400;font-size:1rem;color:var(--muted)}
+.quick p{margin:0}
+.quick ul{margin:0;padding-left:20px}
 @media (max-width: 900px){
   .layout{grid-template-columns:minmax(0,1fr)}
   .meters{grid-template-columns:minmax(0,1fr)}
@@ -81,7 +110,12 @@ canvas{display:block;width:100%;aspect-ratio:16/10;cursor:pointer;touch-action:m
 <div class="wrap">
   <header class="top">
     <h1>Growth Town <span>built with Melissa Rodier</span></h1>
-    <a class="mail" href="mailto:melissa.a.rodier@gmail.com">Say hi</a>
+    <div class="contact-top">
+      <button class="btn" id="quickBtn" type="button">Skip to the quick version</button>
+      <span class="addr">melissa.a.rodier@gmail.com</span>
+      <a class="btn main" href="mailto:melissa.a.rodier@gmail.com">Email me</a>
+      <a class="btn" href="https://linkedin.com/in/melissa-rodier" target="_blank" rel="noopener">LinkedIn</a>
+    </div>
   </header>
 
   <div class="layout">
@@ -108,6 +142,8 @@ canvas{display:block;width:100%;aspect-ratio:16/10;cursor:pointer;touch-action:m
   </div>
 </div>
 
+<div class="quick" id="quick" hidden role="dialog" aria-modal="true" aria-labelledby="quickTitle"><div class="in" id="quickIn"></div></div>
+
 <script>
 (function(){
   var B = [
@@ -128,14 +164,34 @@ canvas{display:block;width:100%;aspect-ratio:16/10;cursor:pointer;touch-action:m
     {id:'data', name:'Data Observatory', blurb:'Reporting that turns numbers into decisions', color:'#3D3A8C', h:1.1, top:'dome', boost:{efficiency:2, retention:1},
      proof:'The fast pivot', story:'Awareness ads were running about $500 a lead, so I moved budget into lead gen and built a scorecard around the numbers the owner actually cared about. He said it was exactly what he’d been looking for.', stat:'$211 to $64', statl:'cost per conversion, in one month'}
   ];
-  var byId = {}; B.forEach(function(b){ byId[b.id] = b; });
+  var MORE = {
+    cs:[{title:'How I rebuilt the trust', teaser:'how I rebuilt the trust', story:'Weekly syncs, Friday updates, and reporting rebuilt around problem, cause and solution. I reconciled the client’s own revenue report against ad spend so ROI was something they could check themselves. Paid search conversions grew from 120 to 164 a month.', stat:'2x', statl:'roofing leads, year over year'},
+        {title:'Where I learned it', teaser:'where I learned it', story:'Today I manage a book of 25+ client brands. Before this, I led client success at Destiny Marketing Solutions for 15+ clients, owning strategy, reporting and relationships, and managing and developing a junior account manager.', stat:'25+', statl:'client brands in my current portfolio'}],
+    paid:[{title:'Filling open capacity', teaser:'a second paid turnaround', story:'One brand in a multi-brand HVAC group was paying $485 per conversion with service capacity it couldn’t fill. I shifted budget toward plumbing repair, where the demand was, and ran a zip-code audit to cut out-of-area spend.', stat:'5x', statl:'more monthly conversions, June to October'},
+        {title:'The bigger picture', teaser:'the scale I work at', story:'Across my current book, I oversee $1.5M+ in annual client ad spend. Before that, I ran freelance paid campaigns across Google, Meta and LinkedIn with structured A/B testing to find what actually scales.', stat:'$1.5M+', statl:'annual client ad spend overseen'}],
+    lab:[{title:'Inside the build', teaser:'the numbers inside the build', story:'Every contact got a relationship type and an owner, emails came from the person who actually knew them, and branching flows handled bookings, replies and follow-ups, cycling non-responders back in each quarter.', stat:'39.7%', statl:'open rate, with a 6.35% click rate'},
+        {title:'Lifecycle, start to finish', teaser:'my lifecycle background', story:'At Dutch Label Shop I built Klaviyo lifecycle programs with segmentation, automated flows and localization across languages. At Destiny I built nurture programs in HubSpot. I’m certified in both.', stat:'2', statl:'certified platforms: HubSpot and Klaviyo'}],
+    bridge:[{title:'Influencer partnerships', teaser:'partnerships beyond B2B', story:'At Dutch Label Shop I recruited and managed influencer partnerships, producing content that fit the brand and actually spoke to its audience.', stat:'Global', statl:'influencer program for an international ecommerce brand'},
+        {title:'Referrals from relationships', teaser:'partners as a pipeline channel', story:'My referral program for an HR technology consulting firm turned partners, vendors and past clients into a pipeline channel, booking meetings from relationships the firm already had.', stat:'6.8%', statl:'of the list booked a meeting'}],
+    proposal:[{title:'Getting the numbers right', teaser:'the catch that made it work', story:'Before the proposal went out, I caught a mismatch between our scorecard and the actual contract. I also folded Bing into paid search management so the next tier would be an easy yes.', stat:'0', statl:'pricing errors shipped'},
+        {title:'Scoping at scale', teaser:'the book behind it', story:'I scope and grow work across a book of 25+ client brands, figuring out what each client actually needs, not just what they asked for.', stat:'~$480K', statl:'annual book of business'}],
+    ops:[{title:'Running a global team', teaser:'ops at a global scale', story:'At Dutch Label Shop I directed global marketing operations, managing 15+ contractors across 6 languages and 4 continents.', stat:'15+', statl:'contractors across 6 languages and 4 continents'},
+        {title:'Working smarter', teaser:'how I use automation and AI', story:'I build lightweight automations and AI-assisted workflows to streamline planning, QA and reporting, so the team spends its time on the work that actually needs a person.', stat:'AI + automation', statl:'for planning, QA and reporting'}],
+    story:[{title:'The English major', teaser:'where the storytelling comes from', story:'I studied English at Drexel as a Humanities Fellow and Dragon Scholar. It’s why I care so much about how a message lands, not just whether it went out.', stat:'BA', statl:'English, Drexel University'},
+        {title:'Stories with partners', teaser:'co-branded campaigns', story:'At Destiny I led co-branded campaigns with clients and teams across content, email, partner features and storytelling.', stat:'Co-branded', statl:'campaigns across content, email and partners'}],
+    data:[{title:'The catch before the client', teaser:'the catch that builds trust', story:'I caught a lead count that was off by 30 before it ever reached a client report. Small catches like that are how trust actually gets built.', stat:'30', statl:'leads off, caught before anyone saw it'},
+        {title:'Decisions, not dashboards', teaser:'how I report', story:'Clients don’t want dashboards. They want to know what happened, why, and what we’re doing about it, so that’s how I report. I’m Google Analytics certified and work in Looker Studio and AgencyAnalytics.', stat:'3 questions', statl:'what happened, why, and what’s next'}]
+  };
+  var byId = {}; B.forEach(function(b){ byId[b.id] = b; b.more = MORE[b.id]; });
+  function primary(b){ var best = null; for(var k in b.boost) if(!best || b.boost[k] > b.boost[best]) best = k; return best; }
+  function LH(b, lv){ return Math.min(b.h * [1, 1.3, 1.55][(lv || 1) - 1], 3.3); }
   var MAX = {retention:0, pipeline:0, efficiency:0};
-  B.forEach(function(b){ for(var k in b.boost) MAX[k] += b.boost[k]; });
+  B.forEach(function(b){ for(var k in b.boost) MAX[k] += b.boost[k]; MAX[primary(b)] += 2; });
 
   var N = 7, ROAD = 3;
   var grid = []; for(var r=0;r<N;r++){ grid.push([]); for(var c=0;c<N;c++) grid[r].push(null); }
   var placed = {};
-  var selected = null, hover = null, viewing = null, bannerShown = false, fullShown = false;
+  var selected = null, hover = null, viewing = null, bannerShown = false, fullShown = false, maxShown = false;
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   var cv = document.getElementById('c'), ctx = cv.getContext('2d');
@@ -189,8 +245,8 @@ canvas{display:block;width:100%;aspect-ratio:16/10;cursor:pointer;touch-action:m
     }
   }
 
-  function drawBuilding(b, c, r, grow, ghost){
-    var k = 0.14, base = b.color, H = b.h * TH * 1.15 * grow;
+  function drawBuilding(b, c, r, hf, ghost, ready, level){
+    var k = 0.14, base = b.color, H = hf * TH * 1.15, grow = ready ? 1 : 0.5; level = level || 1;
     var N_ = P(c+k, r+k), E = P(c+1-k, r+k), S = P(c+1-k, r+1-k), W_ = P(c+k, r+1-k);
     ctx.save(); if(ghost) ctx.globalAlpha = 0.5;
     ctx.fillStyle = 'rgba(0,0,0,.12)'; ctx.beginPath(); ctx.ellipse(S.x, S.y - TH*0.38, TW*0.42, TH*0.32, 0, 0, Math.PI*2); ctx.fill();
@@ -198,6 +254,8 @@ canvas{display:block;width:100%;aspect-ratio:16/10;cursor:pointer;touch-action:m
     poly([S, E, up(E,H), up(S,H)], shade(base, -0.12));
     var tops = [up(N_,H), up(E,H), up(S,H), up(W_,H)];
     poly(tops, shade(base, 0.22));
+    for(var lvI=1; lvI<level; lvI++){ var yb = H - lvI*TH*0.24, bh = TH*0.08;
+      poly([up(W_,yb), up(S,yb), up(S,yb-bh), up(W_,yb-bh)], '#F5B700'); poly([up(S,yb), up(E,yb), up(E,yb-bh), up(S,yb-bh)], '#FFD24D'); }
     // windows
     if(grow > 0.6){
       var rows = Math.max(1, Math.floor(b.h * 1.6)), win = 'rgba(255,248,214,.92)';
@@ -285,18 +343,19 @@ canvas{display:block;width:100%;aspect-ratio:16/10;cursor:pointer;touch-action:m
     var now = Date.now();
     items.forEach(function(it){
       if(it.kind === 'w') drawWalker(it.p);
-      else if(it.kind === 'g') drawBuilding(byId[selected], it.c, it.r, 1, true);
+      else if(it.kind === 'g') drawBuilding(byId[selected], it.c, it.r, byId[selected].h, true, true, 1);
       else { var cell = grid[it.r][it.c], t = reduce ? 1 : Math.min(1, (now - cell.born)/450);
         var e = t < 1 ? 1 - Math.pow(1 - t, 3) * (1 - 2.2*t*(1-t)) : 1;
-        drawBuilding(byId[cell.id], it.c, it.r, Math.max(0.05, e), false);
+        var bb0 = byId[cell.id], from = cell.prev ? LH(bb0, cell.prev) : 0, to = LH(bb0, cell.level);
+        drawBuilding(bb0, it.c, it.r, Math.max(0.05*to, from + (to - from)*e), false, cell.prev ? true : e > 0.9, cell.level);
         if(viewing === cell.id){ var o = P(it.c+0.5, it.r+0.5); ctx.strokeStyle = '#5B47E0'; ctx.lineWidth = 3; ctx.beginPath(); ctx.ellipse(o.x, o.y, TW*0.48, TH*0.48, 0, 0, Math.PI*2); ctx.stroke(); } }
     });
     sparks = sparks.filter(function(s){ s.x += s.vx; s.y += s.vy; s.vy += 0.15; s.life--; ctx.fillStyle = s.col; ctx.fillRect(s.x, s.y, 4, 4); return s.life > 0; });
     if(hover && !selected && grid[hover.r][hover.c]){
-      var hb = byId[grid[hover.r][hover.c].id], hp = P(hover.c+0.5, hover.r);
-      ctx.font = '600 14px Fredoka, sans-serif'; var tw = ctx.measureText(hb.name).width + 20, ty = hp.y - hb.h*TH*1.15 - TH*1.4;
+      var hcell = grid[hover.r][hover.c], hb = byId[hcell.id], hp = P(hover.c+0.5, hover.r), label = hb.name + ', level ' + hcell.level;
+      ctx.font = '600 14px Fredoka, sans-serif'; var tw = ctx.measureText(label).width + 20, ty = hp.y - LH(hb, hcell.level)*TH*1.15 - TH*1.4;
       ctx.fillStyle = 'rgba(31,35,64,.92)'; roundRect(hp.x - tw/2, ty, tw, 26, 13); ctx.fill();
-      ctx.fillStyle = '#FFFFFF'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(hb.name, hp.x, ty + 13);
+      ctx.fillStyle = '#FFFFFF'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(label, hp.x, ty + 13);
     }
   }
   function roundRect(x,y,w,h,r){ ctx.beginPath(); ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r); ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath(); }
@@ -312,7 +371,7 @@ canvas{display:block;width:100%;aspect-ratio:16/10;cursor:pointer;touch-action:m
     var c = Math.floor((a + b)/2), r = Math.floor((b - a)/2);
     // check taller buildings first: if the pointer is over a building's body, prefer it
     for(var d=2*(N-1); d>=0; d--) for(var rr=0; rr<N; rr++){ var cc = d - rr; if(cc<0||cc>=N||!grid[rr][cc]) continue;
-      var bb = byId[grid[rr][cc].id], base = P(cc+0.5, rr+0.5), H = bb.h*TH*1.15;
+      var bb = byId[grid[rr][cc].id], base = P(cc+0.5, rr+0.5), H = LH(bb, grid[rr][cc].level)*TH*1.15;
       if(mx > base.x - TW*0.38 && mx < base.x + TW*0.38 && my < base.y + TH*0.4 && my > base.y - H - TH*0.6) return {c:cc, r:rr};
     }
     if(c<0||r<0||c>=N||r>=N) return null;
@@ -329,7 +388,7 @@ canvas{display:block;width:100%;aspect-ratio:16/10;cursor:pointer;touch-action:m
   });
 
   function place(id, c, r){
-    grid[r][c] = {id:id, born:Date.now()}; placed[id] = {c:c, r:r}; burst(c, r);
+    grid[r][c] = {id:id, born:Date.now(), level:1}; placed[id] = {c:c, r:r}; burst(c, r);
     selected = null; updateMeters(); showDetail(id);
     var n = Object.keys(placed).length;
     if(n === B.length && !fullShown){ fullShown = true; showBanner('Full town, full engine!', 'You built every single piece. That’s the whole job I’m looking for: owning the engine, end to end, alongside a great team. Would love to connect!'); }
@@ -342,13 +401,18 @@ canvas{display:block;width:100%;aspect-ratio:16/10;cursor:pointer;touch-action:m
     free.sort(function(a,b){ return a.k - b.k; });
     if(free.length) place(selected, free[0].c, free[0].r);
   }
+  function upgrade(id){
+    var p = placed[id]; if(!p) return; var cell = grid[p.r][p.c]; if(cell.level >= 3) return;
+    cell.prev = cell.level; cell.level++; cell.born = Date.now(); burst(p.c, p.r); updateMeters(); showDetail(id);
+    if(cell.level === 3 && !maxShown){ maxShown = true; showBanner('Maxed out!', 'That’s the deep cut on your ' + byId[id].name + '. Every level is real work I’ve done, and there’s more where that came from. Would love to connect!'); }
+  }
   function removeB(id){
     var p = placed[id]; if(!p) return; grid[p.r][p.c] = null; delete placed[id]; viewing = null; updateMeters(); showMenu();
   }
 
   function updateMeters(){
     var tot = {retention:0, pipeline:0, efficiency:0};
-    Object.keys(placed).forEach(function(id){ var b = byId[id]; for(var k in b.boost) tot[k] += b.boost[k]; });
+    Object.keys(placed).forEach(function(id){ var b = byId[id], q = placed[id], lv = grid[q.r][q.c].level; for(var k in b.boost) tot[k] += b.boost[k]; tot[primary(b)] += lv - 1; });
     ['retention','pipeline','efficiency'].forEach(function(k){
       var pct = Math.round(tot[k] / MAX[k] * 100);
       document.getElementById('f-' + k).style.width = pct + '%';
@@ -365,12 +429,12 @@ canvas{display:block;width:100%;aspect-ratio:16/10;cursor:pointer;touch-action:m
 
   function showMenu(){
     viewing = null;
-    var h = '<h2>Build your marketing team</h2><p class="intro">Hi! I’m Melissa. Build the team you wish you had. Every building here is something I’ve actually built, so tap one after it goes up to see the real story.</p><div class="menu" role="group" aria-label="Buildings">';
+    var h = '<h2>Build your marketing team</h2><p class="intro">Hi! I’m Melissa. Build the team you wish you had. Every building is something I’ve actually built. Tap one after it goes up to see the real story, then upgrade it to unlock more.</p><div class="menu" role="group" aria-label="Buildings">';
     B.forEach(function(b){
       var built = !!placed[b.id];
       h += '<button type="button" class="card' + (built ? ' built' : '') + '" data-id="' + b.id + '" aria-pressed="' + (selected === b.id) + '"><span class="sw" style="background:' + b.color + '"></span><span><b>' + esc(b.name) + '</b><small>' + esc(b.blurb) + '</small></span></button>';
     });
-    h += '</div>';
+    h += '</div>' + contactHTML();
     side.innerHTML = h;
     if(selected) setHint('Now tap an empty green lot to build your ' + esc(byId[selected].name) + '. <button type="button" class="btn" id="autoBtn">Place it for me</button> <button type="button" class="btn" id="cancelBtn">Cancel</button>');
     else setHint(Object.keys(placed).length ? 'Tap any building in your town to see its story, or pick another from the menu.' : 'Pick a building from the menu, then tap an empty lot to place it.');
@@ -386,21 +450,53 @@ canvas{display:block;width:100%;aspect-ratio:16/10;cursor:pointer;touch-action:m
       return; }
     if(e.target.id === 'backBtn'){ showMenu(); }
     if(e.target.id === 'removeBtn'){ removeB(viewing); }
+    if(e.target.id === 'upBtn'){ upgrade(viewing); }
   });
 
+  function contactHTML(){
+    return '<div class="contact"><b>Like what you’re building?</b><p>I’d love to talk about your team.</p><div class="row"><a class="btn main" href="mailto:melissa.a.rodier@gmail.com">Email me</a><a class="btn" href="https://linkedin.com/in/melissa-rodier" target="_blank" rel="noopener">LinkedIn</a></div><p class="addr">melissa.a.rodier@gmail.com</p></div>';
+  }
   function showDetail(id){
-    var b = byId[id]; viewing = id;
-    side.innerHTML = '<div class="detail" style="display:flex;flex-direction:column;gap:12px">' +
+    var b = byId[id], p = placed[id], lv = p ? grid[p.r][p.c].level : 1; viewing = id;
+    var ch = [{title:b.proof, story:b.story, stat:b.stat, statl:b.statl}].concat(b.more), cur = ch[lv-1];
+    var pips = ''; for(var i=0;i<3;i++) pips += '<span class="pip' + (i < lv ? ' on' : '') + '"></span>';
+    var h = '<div class="detail" style="display:flex;flex-direction:column;gap:12px">' +
       '<span class="tag" style="background:' + b.color + ';color:' + (id === 'paid' || id === 'ops' || id === 'data' ? '#FFFFFF' : '#1F2340') + '">' + esc(b.name) + '</span>' +
-      '<h2>' + esc(b.proof) + '</h2>' +
-      '<div><div class="stat">' + esc(b.stat) + '</div><div class="statl">' + esc(b.statl) + '</div></div>' +
-      '<p>' + esc(b.story) + '</p>' +
-      '<div class="row"><button type="button" class="btn main" id="backBtn">Build more</button><button type="button" class="btn" id="removeBtn">Remove it</button></div></div>';
-    setHint('Your ' + esc(b.name) + ' is up and running. Keep building, or tap another building to see its story.');
-    var bb = document.getElementById('backBtn'); if(bb) bb.focus();
+      '<div class="lvl"><span class="pips" aria-hidden="true">' + pips + '</span><span>Level ' + lv + ' of 3</span></div>' +
+      '<h2>' + esc(cur.title) + '</h2>' +
+      '<div><div class="stat">' + esc(cur.stat) + '</div><div class="statl">' + esc(cur.statl) + '</div></div>' +
+      '<p>' + esc(cur.story) + '</p>';
+    if(lv < 3) h += '<div class="upbox"><button type="button" class="btn up" id="upBtn">Upgrade to level ' + (lv+1) + '</button><p class="statl">Unlocks ' + esc(ch[lv].teaser) + '</p></div>';
+    else h += '<p class="maxed">Fully upgraded. That’s the whole story!</p>';
+    for(var j=lv-2; j>=0; j--) h += '<details><summary>Level ' + (j+1) + ': ' + esc(ch[j].title) + '</summary><p><strong>' + esc(ch[j].stat) + '</strong>, ' + esc(ch[j].statl) + '</p><p>' + esc(ch[j].story) + '</p></details>';
+    h += '<div class="row"><button type="button" class="btn main" id="backBtn">Build more</button><button type="button" class="btn" id="removeBtn">Remove it</button></div></div>' + contactHTML();
+    side.innerHTML = h;
+    setHint(lv < 3 ? 'Your ' + esc(b.name) + ' is at level ' + lv + '. Upgrade it to unlock more of the story, or keep building.' : 'Your ' + esc(b.name) + ' is fully upgraded. Try maxing out another one!');
+    var f = document.getElementById('upBtn') || document.getElementById('backBtn'); if(f) f.focus({preventScroll:true});
   }
 
   window.addEventListener('keydown', function(e){ if(e.key === 'Escape'){ if(!banner.hidden){ banner.hidden = true; return; } if(selected){ selected = null; showMenu(); } } });
+
+  var quick = document.getElementById('quick'), quickIn = document.getElementById('quickIn'), quickBtn = document.getElementById('quickBtn');
+  function buildQuick(){
+    var h = '<div class="qbar"><h2 id="quickTitle">Melissa Rodier, the quick version</h2><button class="btn main" id="closeQuick" type="button">Back to building</button></div>';
+    h += '<p class="lede">10 years in B2B marketing and client success. Right now I run a book of 25+ client brands worth about $480K a year, with $1.5M+ in annual ad spend riding on the work. Here’s everything from the town, no building required.</p>';
+    B.forEach(function(b){
+      var ch = [{title:b.proof, story:b.story, stat:b.stat, statl:b.statl}].concat(b.more);
+      h += '<section><h3>' + esc(b.name) + '</h3><p style="color:var(--muted)">' + esc(b.blurb) + '</p>';
+      ch.forEach(function(x){ h += '<div class="ch"><b>' + esc(x.title) + '</b><div class="num">' + esc(x.stat) + ' <span>' + esc(x.statl) + '</span></div><p>' + esc(x.story) + '</p></div>'; });
+      h += '</section>';
+    });
+    h += '<section><h3>The path here</h3><ul><li>beMarketing Solutions, Senior Account Manager, 2025 to now</li><li>Destiny Marketing Solutions, Client Success Lead and Digital Marketing Strategist, 2023 to 2025</li><li>Freelance Digital Marketing Consultant, 2022 to 2025</li><li>Dutch Label Shop, Marketing Operations Manager and Digital Project Manager, 2020 to 2022</li><li>LeagueSide, Campaign Strategist and Operations Manager, 2018 to 2019</li><li>Woden, Account Manager and Associate, 2016 to 2017</li></ul></section>';
+    h += contactHTML();
+    quickIn.innerHTML = h;
+    document.getElementById('closeQuick').addEventListener('click', closeQuick);
+  }
+  function openQuick(){ buildQuick(); quick.hidden = false; quick.scrollTop = 0; document.body.style.overflow = 'hidden'; document.getElementById('closeQuick').focus(); }
+  function closeQuick(){ quick.hidden = true; document.body.style.overflow = ''; quickBtn.focus(); }
+  quickBtn.addEventListener('click', openQuick);
+  window.addEventListener('keydown', function(e){ if(e.key === 'Escape' && !quick.hidden) closeQuick(); });
+  if(location.hash.replace('#','') === 'quick') openQuick();
 
   resize(); showMenu(); updateMeters();
   if(document.fonts && document.fonts.ready) document.fonts.ready.then(function(){ requestAnimationFrame(tick); }); else requestAnimationFrame(tick);
