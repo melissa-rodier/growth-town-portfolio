@@ -1,0 +1,410 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Growth Town, built by Melissa Rodier</title>
+<meta name="description" content="Build the marketing team you wish you had. Every building is something Melissa Rodier has actually built.">
+<meta property="og:title" content="Growth Town: build a team with Melissa Rodier">
+<meta property="og:description" content="Build the marketing team you wish you had. Every building is something I’ve actually built.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏙️</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Figtree:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EEF6FF; --panel:#FFFFFF; --ink:#1F2340; --muted:#4E5577; --line:#D5DDEE; --accent:#5B47E0; --sun:#F5B700; --on-sun:#1F2340; --chip:#F1EEFF;
+  --round:'Fredoka', 'Avenir Next Rounded', 'Trebuchet MS', system-ui, sans-serif;
+  --body:'Figtree', 'Segoe UI', system-ui, sans-serif;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){ --bg:#141833; --panel:#1E2347; --ink:#EEF0FF; --muted:#BAC0E0; --line:#343B6B; --accent:#A79BFF; --chip:#2A2F5E; color-scheme:dark; }
+}
+:root[data-theme="dark"]{ --bg:#141833; --panel:#1E2347; --ink:#EEF0FF; --muted:#BAC0E0; --line:#343B6B; --accent:#A79BFF; --chip:#2A2F5E; color-scheme:dark; }
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.55}
+button{font:inherit;color:inherit}
+a{color:var(--accent)}
+:focus-visible{outline:3px solid var(--accent);outline-offset:3px;border-radius:10px}
+.wrap{max-width:1240px;margin:0 auto;padding:18px 20px 36px}
+.top{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px;margin-bottom:16px}
+.top h1{margin:0;font-family:var(--round);font-weight:700;font-size:clamp(1.6rem,3vw,2.2rem);letter-spacing:-0.01em}
+.top h1 span{font-weight:500;color:var(--muted);font-size:.6em;margin-left:8px}
+.top a.mail{font-family:var(--round);font-weight:600;text-decoration:none;background:var(--sun);color:var(--on-sun);padding:10px 18px;border-radius:999px;min-height:44px;display:inline-flex;align-items:center}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:20px;align-items:start}
+.stage{position:relative;background:var(--panel);border-radius:24px;overflow:hidden;box-shadow:0 0 0 1px var(--line)}
+canvas{display:block;width:100%;aspect-ratio:16/10;cursor:pointer;touch-action:manipulation}
+.hint{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:12px 16px;border-top:1px solid var(--line);min-height:62px}
+.hint p{margin:0;color:var(--muted)}
+.meters{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;padding:14px 16px 18px;border-top:1px solid var(--line)}
+.meter .lbl{display:flex;justify-content:space-between;font-family:var(--round);font-weight:600;font-size:15px;margin-bottom:6px}
+.meter .track{height:12px;border-radius:999px;background:var(--chip);overflow:hidden}
+.meter .fill{height:100%;width:0;border-radius:999px;transition:width .5s cubic-bezier(.2,.9,.3,1.2)}
+.banner{position:absolute;left:16px;right:16px;top:16px;background:var(--panel);border-radius:18px;padding:16px 18px;box-shadow:0 0 0 2px var(--sun),0 10px 30px rgba(20,24,60,.25);display:flex;flex-direction:column;gap:10px}
+.banner[hidden]{display:none}
+.banner h2{margin:0;font-family:var(--round);font-size:1.35rem}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 18px;border-radius:999px;border:2px solid var(--ink);background:transparent;font-family:var(--round);font-weight:600;font-size:16px;cursor:pointer;text-decoration:none;color:var(--ink)}
+.btn.main{background:var(--sun);border-color:var(--sun);color:var(--on-sun)}
+.row{display:flex;flex-wrap:wrap;gap:10px}
+.side{background:var(--panel);border-radius:24px;box-shadow:0 0 0 1px var(--line);padding:20px;display:flex;flex-direction:column;gap:14px}
+.side h2{margin:0;font-family:var(--round);font-size:1.4rem}
+.side .intro{color:var(--muted);margin:0}
+.menu{display:grid;gap:8px}
+.card{display:grid;grid-template-columns:40px minmax(0,1fr);gap:12px;align-items:center;text-align:left;padding:10px 12px;border-radius:16px;border:2px solid var(--line);background:transparent;cursor:pointer;min-height:60px}
+.card:hover{border-color:var(--ink)}
+.card[aria-pressed="true"]{border-color:var(--accent);background:var(--chip)}
+.card .sw{width:40px;height:40px;border-radius:12px;position:relative}
+.card .sw::after{content:"";position:absolute;inset:auto 6px 6px 6px;height:10px;border-radius:4px;background:rgba(255,255,255,.55)}
+.card b{display:block;font-family:var(--round);font-weight:600;font-size:16px}
+.card small{display:block;color:var(--muted);font-size:14px;line-height:1.35}
+.card.built{opacity:.65}
+.card.built b::after{content:" (built)";font-weight:500;color:var(--muted)}
+.detail h3{margin:0;font-family:var(--round);font-size:1.15rem;color:var(--muted);font-weight:500}
+.detail .stat{font-family:var(--round);font-weight:700;font-size:2.6rem;line-height:1;letter-spacing:-0.02em}
+.detail .statl{color:var(--muted);margin-top:4px}
+.detail .tag{display:inline-block;align-self:flex-start;font-family:var(--round);font-weight:600;font-size:14px;padding:3px 12px;border-radius:999px;color:#1F2340}
+.detail p{margin:0}
+@media (max-width: 900px){
+  .layout{grid-template-columns:minmax(0,1fr)}
+  .meters{grid-template-columns:minmax(0,1fr)}
+}
+@media (prefers-reduced-motion: reduce){ .meter .fill{transition:none} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <h1>Growth Town <span>built with Melissa Rodier</span></h1>
+    <a class="mail" href="mailto:melissa.a.rodier@gmail.com">Say hi</a>
+  </header>
+
+  <div class="layout">
+    <div class="stage">
+      <canvas id="c" aria-label="An isometric town you can build. Choose a building from the menu, then click an empty lot to place it." role="img"></canvas>
+      <div class="banner" id="banner" hidden role="status">
+        <h2 id="bannerTitle">Look at that engine run!</h2>
+        <p id="bannerText">Everything in your town is something I’ve actually built for real teams. Imagine what we could build together.</p>
+        <div class="row">
+          <a class="btn main" href="mailto:melissa.a.rodier@gmail.com">Email Melissa</a>
+          <a class="btn" href="https://linkedin.com/in/melissa-rodier" target="_blank" rel="noopener">LinkedIn</a>
+          <button class="btn" id="keepBtn" type="button">Keep building</button>
+        </div>
+      </div>
+      <div class="hint" id="hint"><p>Pick a building from the menu, then tap an empty lot to place it.</p></div>
+      <div class="meters">
+        <div class="meter"><div class="lbl"><span>Client retention</span><span id="m-retention">0%</span></div><div class="track"><div class="fill" id="f-retention" style="background:#F5B700"></div></div></div>
+        <div class="meter"><div class="lbl"><span>Pipeline</span><span id="m-pipeline">0%</span></div><div class="track"><div class="fill" id="f-pipeline" style="background:#6F5BEA"></div></div></div>
+        <div class="meter"><div class="lbl"><span>Team efficiency</span><span id="m-efficiency">0%</span></div><div class="track"><div class="fill" id="f-efficiency" style="background:#2FB3A0"></div></div></div>
+      </div>
+    </div>
+
+    <aside class="side" id="side" aria-live="polite"></aside>
+  </div>
+</div>
+
+<script>
+(function(){
+  var B = [
+    {id:'cs', name:'Client Success HQ', blurb:'Keeps clients happy, honest and growing', color:'#F5B700', h:1.5, top:'flag', boost:{retention:3, efficiency:1},
+     proof:'The turnaround', story:'An account escalated in August with trust at an all-time low. I set up weekly syncs, put creative on pre-approval, and rebuilt reporting around problem, cause and solution so the client could see exactly what was happening.', stat:'4.6x', statl:'return on ad spend the very next quarter'},
+    {id:'paid', name:'Paid Media Tower', blurb:'Turns ad spend into real leads', color:'#6F5BEA', h:2.7, top:'antenna', boost:{pipeline:3},
+     proof:'The diagnosis', story:'A plumbing company was paying $700+ per conversion. Digging in with our paid team traced it to a negative keyword setting quietly blocking good traffic, and we shifted toward the repair searches that actually book jobs.', stat:'−88%', statl:'cost per conversion, June to September'},
+    {id:'lab', name:'Lifecycle Lab', blurb:'Email and CRM programs that nurture and reactivate', color:'#2FB3A0', h:1.0, top:'dome', boost:{pipeline:2, retention:1},
+     proof:'The dormant network', story:'I built a partner and vendor referral program in GoHighLevel, with every email coming from whoever actually held that relationship, plus branching follow-ups for bookings, replies and silence.', stat:'13', statl:'meetings booked from a 190-person list'},
+    {id:'bridge', name:'Partnership Pavilion', blurb:'Partner networks that bring deals in', color:'#FF7A59', h:0.9, top:'roof', boost:{pipeline:2, retention:1},
+     proof:'The partner network', story:'At LeagueSide I grew a B2B partnership network of youth sports organizations by repositioning the offer and redesigning partner incentives.', stat:'171%', statl:'month-over-month jump in signed contracts'},
+    {id:'proposal', name:'Proposal Studio', blurb:'Scopes the next yes with existing clients', color:'#F06AA8', h:1.1, top:'roof', boost:{pipeline:1, retention:2},
+     proof:'The expansion', story:'A client on a small social and email package needed more. I scoped a Good, Better, Best expansion and caught a contract mismatch before it went out, so it was built on the right numbers.', stat:'Signed', statl:'starting at Good, with a phased path to Better'},
+    {id:'ops', name:'Operations HQ', blurb:'Playbooks and systems so nothing falls through', color:'#4C6FBF', h:1.6, top:'stack', boost:{efficiency:3},
+     proof:'The playbook', story:'I wrote an operational gaps assessment with practical fixes, built a coverage hub so anyone could step into an account, and created reusable call scripts and reporting templates. At Dutch Label Shop, I ran operations for 15+ contractors across 6 languages.', stat:'0', statl:'missed client meetings while absorbing a colleague’s accounts'},
+    {id:'story', name:'Story Studio', blurb:'Content and messaging people remember', color:'#F28C28', h:1.2, top:'billboard', boost:{pipeline:1, retention:1, efficiency:1},
+     proof:'The story guide', story:'At Woden I wrote the demand generation chapter of the Story Guide, a framework for narrative-driven B2B marketing. I have an English degree, so stories are kind of my thing.', stat:'1 chapter', statl:'on narrative-driven demand gen'},
+    {id:'data', name:'Data Observatory', blurb:'Reporting that turns numbers into decisions', color:'#3D3A8C', h:1.1, top:'dome', boost:{efficiency:2, retention:1},
+     proof:'The fast pivot', story:'Awareness ads were running about $500 a lead, so I moved budget into lead gen and built a scorecard around the numbers the owner actually cared about. He said it was exactly what he’d been looking for.', stat:'$211 to $64', statl:'cost per conversion, in one month'}
+  ];
+  var byId = {}; B.forEach(function(b){ byId[b.id] = b; });
+  var MAX = {retention:0, pipeline:0, efficiency:0};
+  B.forEach(function(b){ for(var k in b.boost) MAX[k] += b.boost[k]; });
+
+  var N = 7, ROAD = 3;
+  var grid = []; for(var r=0;r<N;r++){ grid.push([]); for(var c=0;c<N;c++) grid[r].push(null); }
+  var placed = {};
+  var selected = null, hover = null, viewing = null, bannerShown = false, fullShown = false;
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  var cv = document.getElementById('c'), ctx = cv.getContext('2d');
+  var side = document.getElementById('side'), hint = document.getElementById('hint');
+  var cw = 0, ch = 0, TW = 0, TH = 0, ox = 0, oy = 0, dpr = 1;
+
+  function resize(){
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    var r = cv.getBoundingClientRect(); cw = r.width; ch = r.width * 10 / 16;
+    cv.width = Math.round(cw * dpr); cv.height = Math.round(ch * dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    TW = Math.min(cw / 7.8, ch / 4.6); TH = TW / 2;
+    ox = cw / 2; oy = ch - N*TH - TH*0.9;
+  }
+  window.addEventListener('resize', resize);
+
+  function P(c, r){ return {x: ox + (c - r) * TW/2, y: oy + (c + r) * TH/2}; }
+  function shade(hex, f){
+    var n = parseInt(hex.slice(1),16), R = n>>16, G = (n>>8)&255, Bl = n&255;
+    function m(v){ return Math.max(0, Math.min(255, Math.round(f < 0 ? v*(1+f) : v + (255-v)*f))); }
+    return 'rgb(' + m(R) + ',' + m(G) + ',' + m(Bl) + ')';
+  }
+  function poly(pts, fill, stroke){
+    ctx.beginPath(); ctx.moveTo(pts[0].x, pts[0].y);
+    for(var i=1;i<pts.length;i++) ctx.lineTo(pts[i].x, pts[i].y);
+    ctx.closePath(); ctx.fillStyle = fill; ctx.fill();
+    if(stroke){ ctx.strokeStyle = stroke; ctx.lineWidth = 1; ctx.stroke(); }
+  }
+  function up(p, h){ return {x:p.x, y:p.y - h}; }
+  function lerp(a, b, t){ return {x:a.x + (b.x-a.x)*t, y:a.y + (b.y-a.y)*t}; }
+
+  function isRoad(c, r){ return c === ROAD || r === ROAD; }
+
+  function drawTile(c, r){
+    var a = P(c,r), b = P(c+1,r), d = P(c+1,r+1), e = P(c,r+1);
+    var road = isRoad(c,r);
+    var col = road ? '#C9C3BA' : ((c + r) % 2 ? '#8FD16A' : '#82C65C');
+    if(!road && hover && hover.c === c && hover.r === r && selected && !grid[r][c]) col = '#B7E89A';
+    poly([a,b,d,e], col);
+    poly([e,d,{x:d.x,y:d.y+TH*0.18},{x:e.x,y:e.y+TH*0.18}], road ? '#A8A197' : '#5E9E43');
+    poly([d,b,{x:b.x,y:b.y+TH*0.18},{x:d.x,y:d.y+TH*0.18}], road ? '#B6AFA5' : '#6DB04E');
+    if(road){
+      ctx.strokeStyle = '#FFFFFF'; ctx.lineWidth = Math.max(1, TW/48); ctx.setLineDash([TW/12, TW/12]);
+      ctx.beginPath();
+      if(r === ROAD && c !== ROAD){ var m1 = lerp(a,e,.5), m2 = lerp(b,d,.5); ctx.moveTo(m1.x,m1.y); ctx.lineTo(m2.x,m2.y); }
+      if(c === ROAD && r !== ROAD){ var n1 = lerp(a,b,.5), n2 = lerp(e,d,.5); ctx.moveTo(n1.x,n1.y); ctx.lineTo(n2.x,n2.y); }
+      ctx.stroke(); ctx.setLineDash([]);
+    } else if(!grid[r][c] && (c*7 + r*3) % 5 === 0){
+      var t = lerp(a,d,.5); ctx.fillStyle = '#5DA543';
+      ctx.beginPath(); ctx.arc(t.x - TW*0.1, t.y, TW*0.05, 0, Math.PI*2); ctx.fill();
+    }
+  }
+
+  function drawBuilding(b, c, r, grow, ghost){
+    var k = 0.14, base = b.color, H = b.h * TH * 1.15 * grow;
+    var N_ = P(c+k, r+k), E = P(c+1-k, r+k), S = P(c+1-k, r+1-k), W_ = P(c+k, r+1-k);
+    ctx.save(); if(ghost) ctx.globalAlpha = 0.5;
+    ctx.fillStyle = 'rgba(0,0,0,.12)'; ctx.beginPath(); ctx.ellipse(S.x, S.y - TH*0.38, TW*0.42, TH*0.32, 0, 0, Math.PI*2); ctx.fill();
+    poly([W_, S, up(S,H), up(W_,H)], shade(base, -0.28));
+    poly([S, E, up(E,H), up(S,H)], shade(base, -0.12));
+    var tops = [up(N_,H), up(E,H), up(S,H), up(W_,H)];
+    poly(tops, shade(base, 0.22));
+    // windows
+    if(grow > 0.6){
+      var rows = Math.max(1, Math.floor(b.h * 1.6)), win = 'rgba(255,248,214,.92)';
+      for(var i=0;i<rows;i++){
+        var yy = H * (i + 0.35) / rows, wh = Math.min(H / rows * 0.42, TH * 0.32);
+        [[W_,S],[S,E]].forEach(function(face){
+          for(var j=0;j<3;j++){
+            var t0 = 0.14 + j*0.27, t1 = t0 + 0.15;
+            var p0 = up(lerp(face[0],face[1],t0), yy + wh), p1 = up(lerp(face[0],face[1],t1), yy + wh);
+            poly([p0, p1, {x:p1.x,y:p1.y+wh}, {x:p0.x,y:p0.y+wh}], win);
+          }
+        });
+      }
+    }
+    // door
+    var d0 = lerp(W_, S, 0.42), d1 = lerp(W_, S, 0.58), dh = Math.min(TH*0.45, H*0.5);
+    poly([d0, d1, up(d1,dh), up(d0,dh)], shade(base, -0.55));
+    // toppers
+    var cx = (tops[0].x + tops[2].x)/2, cy = (tops[0].y + tops[2].y)/2;
+    if(grow > 0.9){
+      if(b.top === 'flag'){ ctx.fillStyle = '#4A3B2A'; ctx.fillRect(cx-1, cy - TH*1.1, 2.5, TH*1.1);
+        var wave = reduce ? 0 : Math.sin(Date.now()/250)*TH*0.06;
+        poly([{x:cx+1.5,y:cy-TH*1.1},{x:cx+TW*0.28,y:cy-TH*0.95+wave},{x:cx+1.5,y:cy-TH*0.78}], '#FF5A5F'); }
+      if(b.top === 'antenna'){ ctx.strokeStyle = '#2B2752'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx, cy - TH*0.9); ctx.stroke();
+        var on = reduce || (Math.floor(Date.now()/600) % 2 === 0);
+        ctx.fillStyle = on ? '#FF4D6D' : '#7A2236'; ctx.beginPath(); ctx.arc(cx, cy - TH*0.9, TW*0.035, 0, Math.PI*2); ctx.fill(); }
+      if(b.top === 'dome'){ ctx.fillStyle = b.id === 'data' ? '#D9DEEE' : '#F4FFFC'; ctx.beginPath(); ctx.ellipse(cx, cy, TW*0.2, TW*0.2, 0, Math.PI, 0); ctx.fill();
+        ctx.fillStyle = 'rgba(0,0,0,.08)'; ctx.beginPath(); ctx.ellipse(cx, cy, TW*0.2, TH*0.18, 0, 0, Math.PI); ctx.fill();
+        if(b.id === 'data'){ ctx.strokeStyle = '#2B2752'; ctx.lineWidth = Math.max(2, TW/30); ctx.beginPath(); ctx.moveTo(cx, cy - TW*0.12); ctx.lineTo(cx + TW*0.18, cy - TW*0.28); ctx.stroke(); } }
+      if(b.top === 'roof'){ var apex = {x:cx, y:cy - TH*0.85};
+        poly([tops[3], tops[2], apex], shade(base, -0.38)); poly([tops[2], tops[1], apex], shade(base, -0.05)); }
+      if(b.top === 'stack'){ var k2 = 0.32, h2 = TH*0.6;
+        var n2 = up(P(c+k2, r+k2),H), e2 = up(P(c+1-k2, r+k2),H), s2 = up(P(c+1-k2, r+1-k2),H), w2 = up(P(c+k2, r+1-k2),H);
+        poly([w2, s2, up(s2,h2), up(w2,h2)], shade(base, -0.3)); poly([s2, e2, up(e2,h2), up(s2,h2)], shade(base, -0.15));
+        poly([up(n2,h2), up(e2,h2), up(s2,h2), up(w2,h2)], shade(base, 0.3)); }
+      if(b.top === 'billboard'){ var bw = TW*0.42, bh = TH*0.5;
+        ctx.fillStyle = '#4A3B2A'; ctx.fillRect(cx - 1, cy - bh*0.6, 2.5, bh*0.6);
+        ctx.fillStyle = '#FFFFFF'; ctx.fillRect(cx - bw/2, cy - bh*1.5, bw, bh);
+        ctx.fillStyle = '#F28C28'; ctx.font = '700 ' + Math.round(bh*0.55) + 'px Fredoka, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText('Hi!', cx, cy - bh); }
+    }
+    ctx.restore();
+  }
+
+  /* little townspeople walking the roads */
+  var walkers = [];
+  var shirts = ['#FF7A59','#2FB3A0','#6F5BEA','#F06AA8','#4C6FBF'];
+  for(var w=0; w<6; w++) walkers.push({axis: w%2, t: Math.random()*N, dir: Math.random() > .5 ? 1 : -1, sp: 0.004 + Math.random()*0.004, shirt: w === 0 ? '#F5B700' : shirts[w % shirts.length], me: w === 0, lane: (w % 3 - 1) * 0.12});
+  function walkerPos(p){
+    var c, r;
+    if(p.axis === 0){ c = p.t; r = ROAD + 0.5 + p.lane; } else { c = ROAD + 0.5 + p.lane; r = p.t; }
+    return {c:c, r:r, pt:P(c, r)};
+  }
+  function drawWalker(p){
+    var q = walkerPos(p).pt, s = TW/28, bob = reduce ? 0 : Math.abs(Math.sin(Date.now()/150 + p.t*5))*s*0.6;
+    ctx.fillStyle = 'rgba(0,0,0,.18)'; ctx.beginPath(); ctx.ellipse(q.x, q.y, s*2.2, s, 0, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = '#2B2752'; ctx.fillRect(q.x - s*1.2, q.y - s*3 - bob, s*2.4, s*3);
+    ctx.fillStyle = p.shirt; ctx.fillRect(q.x - s*1.5, q.y - s*6.5 - bob, s*3, s*3.6);
+    ctx.fillStyle = '#F2C9A0'; ctx.fillRect(q.x - s*1.2, q.y - s*9 - bob, s*2.4, s*2.6);
+    if(p.me){ ctx.fillStyle = '#5A3A2A'; ctx.fillRect(q.x - s*1.5, q.y - s*9.8 - bob, s*3, s*1.2); ctx.fillRect(q.x - s*1.5, q.y - s*9.8 - bob, s*0.8, s*3.2); }
+  }
+
+  var sparks = [];
+  function burst(c, r){
+    if(reduce) return; var o = P(c+0.5, r+0.5);
+    for(var i=0;i<16;i++){ var a = Math.random()*Math.PI*2; sparks.push({x:o.x, y:o.y - TH, vx:Math.cos(a)*(1+Math.random()*2), vy:-2-Math.random()*3, life:40, col:['#F5B700','#FF7A59','#6F5BEA','#2FB3A0'][i%4]}); }
+  }
+
+  function draw(){
+    ctx.clearRect(0,0,cw,ch);
+    var g = ctx.createLinearGradient(0,0,0,ch); g.addColorStop(0,'#BFE3FF'); g.addColorStop(1,'#EAF6FF');
+    ctx.fillStyle = g; ctx.fillRect(0,0,cw,ch);
+    var drift = reduce ? 0 : (Date.now()/60) % (cw + 200);
+    ctx.fillStyle = 'rgba(255,255,255,.9)';
+    [[0.1,0.12,1],[0.55,0.07,0.8],[0.85,0.18,1.1]].forEach(function(cl, i){
+      var x = ((cl[0]*cw + drift*(0.3 + i*0.15)) % (cw + 200)) - 100, y = cl[1]*ch, s = cl[2]*TW*0.5;
+      ctx.beginPath(); ctx.arc(x, y, s*0.6, 0, Math.PI*2); ctx.arc(x + s*0.6, y - s*0.25, s*0.7, 0, Math.PI*2); ctx.arc(x + s*1.3, y, s*0.55, 0, Math.PI*2); ctx.fill();
+    });
+    for(var d=0; d<=2*(N-1); d++) for(var r=0;r<N;r++){ var c = d - r; if(c<0||c>=N) continue; drawTile(c, r); }
+    var items = [];
+    for(var r2=0;r2<N;r2++) for(var c2=0;c2<N;c2++) if(grid[r2][c2]) items.push({depth:c2+r2+1, kind:'b', c:c2, r:r2});
+    if(selected && hover && !grid[hover.r][hover.c] && !isRoad(hover.c, hover.r)) items.push({depth:hover.c+hover.r+1, kind:'g', c:hover.c, r:hover.r});
+    walkers.forEach(function(p){ var q = walkerPos(p); items.push({depth:q.c + q.r, kind:'w', p:p}); });
+    items.sort(function(a,b){ return a.depth - b.depth; });
+    var now = Date.now();
+    items.forEach(function(it){
+      if(it.kind === 'w') drawWalker(it.p);
+      else if(it.kind === 'g') drawBuilding(byId[selected], it.c, it.r, 1, true);
+      else { var cell = grid[it.r][it.c], t = reduce ? 1 : Math.min(1, (now - cell.born)/450);
+        var e = t < 1 ? 1 - Math.pow(1 - t, 3) * (1 - 2.2*t*(1-t)) : 1;
+        drawBuilding(byId[cell.id], it.c, it.r, Math.max(0.05, e), false);
+        if(viewing === cell.id){ var o = P(it.c+0.5, it.r+0.5); ctx.strokeStyle = '#5B47E0'; ctx.lineWidth = 3; ctx.beginPath(); ctx.ellipse(o.x, o.y, TW*0.48, TH*0.48, 0, 0, Math.PI*2); ctx.stroke(); } }
+    });
+    sparks = sparks.filter(function(s){ s.x += s.vx; s.y += s.vy; s.vy += 0.15; s.life--; ctx.fillStyle = s.col; ctx.fillRect(s.x, s.y, 4, 4); return s.life > 0; });
+    if(hover && !selected && grid[hover.r][hover.c]){
+      var hb = byId[grid[hover.r][hover.c].id], hp = P(hover.c+0.5, hover.r);
+      ctx.font = '600 14px Fredoka, sans-serif'; var tw = ctx.measureText(hb.name).width + 20, ty = hp.y - hb.h*TH*1.15 - TH*1.4;
+      ctx.fillStyle = 'rgba(31,35,64,.92)'; roundRect(hp.x - tw/2, ty, tw, 26, 13); ctx.fill();
+      ctx.fillStyle = '#FFFFFF'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(hb.name, hp.x, ty + 13);
+    }
+  }
+  function roundRect(x,y,w,h,r){ ctx.beginPath(); ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r); ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath(); }
+
+  function tick(){
+    walkers.forEach(function(p){ p.t += p.sp * p.dir; if(p.t > N - 0.1){ p.t = N - 0.1; p.dir = -1; } if(p.t < 0.1){ p.t = 0.1; p.dir = 1; } });
+    draw(); requestAnimationFrame(tick);
+  }
+
+  function pick(ev){
+    var rect = cv.getBoundingClientRect(), mx = ev.clientX - rect.left, my = ev.clientY - rect.top;
+    var a = (mx - ox) / (TW/2), b = (my - oy) / (TH/2);
+    var c = Math.floor((a + b)/2), r = Math.floor((b - a)/2);
+    // check taller buildings first: if the pointer is over a building's body, prefer it
+    for(var d=2*(N-1); d>=0; d--) for(var rr=0; rr<N; rr++){ var cc = d - rr; if(cc<0||cc>=N||!grid[rr][cc]) continue;
+      var bb = byId[grid[rr][cc].id], base = P(cc+0.5, rr+0.5), H = bb.h*TH*1.15;
+      if(mx > base.x - TW*0.38 && mx < base.x + TW*0.38 && my < base.y + TH*0.4 && my > base.y - H - TH*0.6) return {c:cc, r:rr};
+    }
+    if(c<0||r<0||c>=N||r>=N) return null;
+    return {c:c, r:r};
+  }
+  cv.addEventListener('pointermove', function(e){ hover = pick(e); });
+  cv.addEventListener('pointerleave', function(){ hover = null; });
+  cv.addEventListener('click', function(e){
+    var t = pick(e); if(!t) return;
+    var cell = grid[t.r][t.c];
+    if(cell){ selected = null; showDetail(cell.id); return; }
+    if(isRoad(t.c, t.r)){ if(selected) setHint('Roads stay clear so the townspeople can get to work. Try a green lot.'); return; }
+    if(selected) place(selected, t.c, t.r);
+  });
+
+  function place(id, c, r){
+    grid[r][c] = {id:id, born:Date.now()}; placed[id] = {c:c, r:r}; burst(c, r);
+    selected = null; updateMeters(); showDetail(id);
+    var n = Object.keys(placed).length;
+    if(n === B.length && !fullShown){ fullShown = true; showBanner('Full town, full engine!', 'You built every single piece. That’s the whole job I’m looking for: owning the engine, end to end, alongside a great team. Would love to connect!'); }
+    else if(n >= 4 && !bannerShown){ bannerShown = true; showBanner('Look at that engine run!', 'Everything in your town is something I’ve actually built for real teams. Imagine what we could build together.'); }
+  }
+  function autoPlace(){
+    if(!selected) return;
+    var free = []; for(var r=0;r<N;r++) for(var c=0;c<N;c++) if(!grid[r][c] && !isRoad(c,r)) free.push({c:c,r:r});
+    free.forEach(function(f){ f.k = Math.min(Math.abs(f.c-ROAD), Math.abs(f.r-ROAD)) + Math.random()*0.9; });
+    free.sort(function(a,b){ return a.k - b.k; });
+    if(free.length) place(selected, free[0].c, free[0].r);
+  }
+  function removeB(id){
+    var p = placed[id]; if(!p) return; grid[p.r][p.c] = null; delete placed[id]; viewing = null; updateMeters(); showMenu();
+  }
+
+  function updateMeters(){
+    var tot = {retention:0, pipeline:0, efficiency:0};
+    Object.keys(placed).forEach(function(id){ var b = byId[id]; for(var k in b.boost) tot[k] += b.boost[k]; });
+    ['retention','pipeline','efficiency'].forEach(function(k){
+      var pct = Math.round(tot[k] / MAX[k] * 100);
+      document.getElementById('f-' + k).style.width = pct + '%';
+      document.getElementById('m-' + k).textContent = pct + '%';
+    });
+  }
+
+  var banner = document.getElementById('banner');
+  function showBanner(t, txt){ document.getElementById('bannerTitle').textContent = t; document.getElementById('bannerText').textContent = txt; banner.hidden = false; }
+  document.getElementById('keepBtn').addEventListener('click', function(){ banner.hidden = true; });
+
+  function setHint(html){ hint.innerHTML = '<p>' + html + '</p>'; }
+  function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+  function showMenu(){
+    viewing = null;
+    var h = '<h2>Build your marketing team</h2><p class="intro">Hi! I’m Melissa. Build the team you wish you had. Every building here is something I’ve actually built, so tap one after it goes up to see the real story.</p><div class="menu" role="group" aria-label="Buildings">';
+    B.forEach(function(b){
+      var built = !!placed[b.id];
+      h += '<button type="button" class="card' + (built ? ' built' : '') + '" data-id="' + b.id + '" aria-pressed="' + (selected === b.id) + '"><span class="sw" style="background:' + b.color + '"></span><span><b>' + esc(b.name) + '</b><small>' + esc(b.blurb) + '</small></span></button>';
+    });
+    h += '</div>';
+    side.innerHTML = h;
+    if(selected) setHint('Now tap an empty green lot to build your ' + esc(byId[selected].name) + '. <button type="button" class="btn" id="autoBtn">Place it for me</button> <button type="button" class="btn" id="cancelBtn">Cancel</button>');
+    else setHint(Object.keys(placed).length ? 'Tap any building in your town to see its story, or pick another from the menu.' : 'Pick a building from the menu, then tap an empty lot to place it.');
+    var ab = document.getElementById('autoBtn'); if(ab) ab.addEventListener('click', autoPlace);
+    var cb = document.getElementById('cancelBtn'); if(cb) cb.addEventListener('click', function(){ selected = null; showMenu(); });
+  }
+  side.addEventListener('click', function(e){
+    var card = e.target.closest('.card');
+    if(card){ var id = card.getAttribute('data-id');
+      if(placed[id]){ showDetail(id); return; }
+      selected = selected === id ? null : id; showMenu();
+      var again = side.querySelector('[data-id="' + id + '"]'); if(again) again.focus();
+      return; }
+    if(e.target.id === 'backBtn'){ showMenu(); }
+    if(e.target.id === 'removeBtn'){ removeB(viewing); }
+  });
+
+  function showDetail(id){
+    var b = byId[id]; viewing = id;
+    side.innerHTML = '<div class="detail" style="display:flex;flex-direction:column;gap:12px">' +
+      '<span class="tag" style="background:' + b.color + ';color:' + (id === 'paid' || id === 'ops' || id === 'data' ? '#FFFFFF' : '#1F2340') + '">' + esc(b.name) + '</span>' +
+      '<h2>' + esc(b.proof) + '</h2>' +
+      '<div><div class="stat">' + esc(b.stat) + '</div><div class="statl">' + esc(b.statl) + '</div></div>' +
+      '<p>' + esc(b.story) + '</p>' +
+      '<div class="row"><button type="button" class="btn main" id="backBtn">Build more</button><button type="button" class="btn" id="removeBtn">Remove it</button></div></div>';
+    setHint('Your ' + esc(b.name) + ' is up and running. Keep building, or tap another building to see its story.');
+    var bb = document.getElementById('backBtn'); if(bb) bb.focus();
+  }
+
+  window.addEventListener('keydown', function(e){ if(e.key === 'Escape'){ if(!banner.hidden){ banner.hidden = true; return; } if(selected){ selected = null; showMenu(); } } });
+
+  resize(); showMenu(); updateMeters();
+  if(document.fonts && document.fonts.ready) document.fonts.ready.then(function(){ requestAnimationFrame(tick); }); else requestAnimationFrame(tick);
+})();
+</script>
+</body>
+</html>
